@@ -28,7 +28,7 @@ These are the same information -- the Configuration of the Service at the provid
 ### Params
 
 * `image_repository`: The Docker image repository string for the image to be used. For example, `ubuntu`, `gcr.io/your-project-name/image-name`.
-* `image_digest`: The image digest of the image. It is expected you will get this from the Docker image resource.
+* `image_digest_path`: Path to a file containing the image digest of the image. It is expected you will get this from the Docker image resource.
 
 ### Build URL
 
