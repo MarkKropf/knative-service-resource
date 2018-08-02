@@ -1,0 +1,15 @@
+
+
+required = [
+    "github.com/knative/serving/pkg/apis/serving",
+    "github.com/concourse/atc"
+]
+
+[[constraint]]
+  name = "github.com/knative/serving"
+  version = "v0.1.0"
+
+
+[[constraint]]
+  name = "github.com/onsi/gomega"
+  version = "1.4.1"
