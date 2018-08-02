@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'common'
+require_relative 'lib/common'
 
 require 'json'
 
