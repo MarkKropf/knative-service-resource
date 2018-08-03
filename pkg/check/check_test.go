@@ -90,7 +90,24 @@ var _ = Describe("Check", func() {
 		})
 
 		Context("Concourse version is ahead of Kubernetes version", func() {
-			// error
+			It("Returns an error", func() {
+				svc1 := NewServiceWithGeneration(1)
+				rev1 := NewRevisionWithGeneration(1)
+				rev2 := NewRevisionWithGeneration(2)
+
+				concourseVersion := &concourse.Version{ConfigurationGeneration: "3"}
+				fakedClients.Service = sf.NewSimpleClientset(svc1, rev1).ServingV1alpha1().Services("test")
+
+				svc1.Status.ObservedGeneration = 2
+				fakedClients.Service.Update(svc1)
+				fakedClients.Revision.Create(rev2)
+				checker = check.NewChecker(fakedClients, source, concourseVersion)
+
+				out, err := checker.Check()
+
+				Expect(err).To(MatchError("version known to Concourse (3) was ahead of version known to Kubernetes (2)"))
+				Expect(out).To(BeNil())
+			})
 		})
 
 		Context("Concourse has a version, but not Kubernetes", func() {

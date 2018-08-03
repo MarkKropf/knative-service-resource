@@ -46,7 +46,7 @@ func (c *checker) compareConcourseVersionTo(version string) (string, error) {
 		return "KnativeVersionHigher", nil
 	}
 
-	if cv < kv {
+	if cv > kv {
 		return "ConcourseVersionHigher", nil
 	}
 
@@ -102,9 +102,12 @@ func (c *checker) Check() (Output, error) {
 		return []concourse.Version{*c.version}, nil
 	case "KnativeVersionHigher":
 		return c.versionsInKnativeSince(latestInKnative)
-
-		//case "ConcourseVersionHigher":
-
+	case "ConcourseVersionHigher":
+		return nil, fmt.Errorf(
+			"version known to Concourse (%s) was ahead of version known to Kubernetes (%s)",
+			c.version.ConfigurationGeneration,
+			latestInKnative,
+		)
 	default:
 		return nil, errors.New("'impossible' error occurred while comparing Knative Service versions in Concourse and Kubernetes")
 	}
