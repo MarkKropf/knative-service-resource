@@ -111,7 +111,17 @@ var _ = Describe("Check", func() {
 		})
 
 		Context("Concourse has a version, but not Kubernetes", func() {
-			// error
+			It("Returns an error", func() {
+				concourseVersion := &concourse.Version{ConfigurationGeneration: "3"}
+				fakedClients.Service = sf.NewSimpleClientset().ServingV1alpha1().Services("test")
+
+				checker = check.NewChecker(fakedClients, source, concourseVersion)
+
+				out, err := checker.Check()
+
+				Expect(err).To(MatchError("could not find Knative service 'test_name' in Kubernetes: services.serving.knative.dev \"test_name\" not found"))
+				Expect(out).To(BeNil())
+			})
 		})
 
 		Context("Kubernetes has a version, but not Concourse", func() {

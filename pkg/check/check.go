@@ -83,7 +83,7 @@ func (c *checker) versionsInKnativeSince(version string) ([]concourse.Version, e
 func (c *checker) Check() (Output, error) {
 	latestInKnative, err := c.latestGenerationInKnative()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not find Knative service '%s' in Kubernetes: %s", c.source.Name, err)
 	}
 
 	if c.isFirstCheck() {
