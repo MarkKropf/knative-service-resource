@@ -34,18 +34,6 @@ var _ = Describe("Check", func() {
 		KubernetesCa:    "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----",
 	}
 
-	Describe("NewChecker()", func() {
-		BeforeEach(func() {
-			version := &concourse.Version{ConfigurationGeneration: "999"}
-
-			checker = check.NewChecker(fakedClients, source, version)
-		})
-
-		It("Makes a Checker", func() {
-			Expect(checker).NotTo(BeNil())
-		})
-	})
-
 	Describe("Check()", func() {
 		Context("Kubernetes version is ahead of Concourse version", func() {
 			It("Returns versions that have not been seen by Concourse", func() {
