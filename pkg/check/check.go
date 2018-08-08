@@ -75,7 +75,9 @@ func (c *checker) versionsInKnativeSince(version string) ([]concourse.Version, e
 	for _, r := range revs.Items {
 		gen := r.Annotations["serving.knative.dev/configurationGeneration"]
 
-		versions = append(versions, concourse.Version{ConfigurationGeneration: gen})
+		if gen > version {
+			versions = append(versions, concourse.Version{ConfigurationGeneration: gen})
+		}
 	}
 
 	return versions, nil
@@ -102,7 +104,7 @@ func (c *checker) Check() (Output, error) {
 	case "VersionsEqual":
 		return []concourse.Version{*c.version}, nil
 	case "KnativeVersionHigher":
-		return c.versionsInKnativeSince(latestInKnative)
+		return c.versionsInKnativeSince(c.version.ConfigurationGeneration)
 	case "ConcourseVersionHigher":
 		return nil, fmt.Errorf(
 			"version known to Concourse (%s) was ahead of version known to Kubernetes (%s)",
