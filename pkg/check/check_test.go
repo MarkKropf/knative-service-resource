@@ -12,6 +12,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"fmt"
+	"strconv"
 )
 
 var _ = Describe("Check", func() {
@@ -182,9 +183,9 @@ func NewRevisionWithGeneration(generation int64) *v1alpha1.Revision {
 			Labels: map[string]string{
 				"serving.knative.dev/configuration": "test_name",
 			},
-		},
-		Spec: v1alpha1.RevisionSpec{
-			Generation: generation,
+			Annotations: map[string]string{
+				"serving.knative.dev/configurationGeneration": strconv.Itoa(int(generation)),
+			},
 		},
 	}
 }

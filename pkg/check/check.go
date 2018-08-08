@@ -73,7 +73,8 @@ func (c *checker) versionsInKnativeSince(version string) ([]concourse.Version, e
 
 	versions := make([]concourse.Version, 0)
 	for _, r := range revs.Items {
-		gen := strconv.Itoa(int(r.GetGeneration()))
+		gen := r.Annotations["serving.knative.dev/configurationGeneration"]
+
 		versions = append(versions, concourse.Version{ConfigurationGeneration: gen})
 	}
 
