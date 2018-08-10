@@ -6,8 +6,8 @@ import (
 	"github.com/jchesterpivotal/knative-service-resource/pkg/concourse"
 )
 
-var _ = Describe("Params", func() {
-	var params *concourse.Params
+var _ = Describe("PutParams", func() {
+	var params *concourse.PutParams
 	var err error
 
 	BeforeEach(func() {
