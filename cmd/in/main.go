@@ -28,7 +28,7 @@ func main() {
 	}
 
 	inner := in.NewInner(client, &input.Source, &input.Version)
-	output, svc, _, err := inner.In()
+	output, svc, rev, err := inner.In()
 	if err != nil {
 		log.Printf("failed to get information from Knative: %s", err)
 		os.Exit(1)
@@ -54,6 +54,21 @@ func main() {
 	}
 	defer svcYaml.Close()
 	yaml.NewEncoder(svcYaml).Encode(svc)
+
+	err = os.Mkdir(filepath.Join(inDir, "revision"), os.ModePerm)
+	if err != nil && !os.IsExist(err) {
+		log.Printf("failed to create revision/ directory: %s\n", err)
+		os.Exit(1)
+	}
+
+	revJson, err := os.Create(filepath.Join(inDir, "revision", "latest.json"))
+	if err != nil {
+		log.Printf("failed to create revision/latest.json: %s\n", err)
+		os.Exit(1)
+		return
+	}
+	defer revJson.Close()
+	json.NewEncoder(revJson).Encode(rev)
 
 	json.NewEncoder(os.Stdout).Encode(output)
 }

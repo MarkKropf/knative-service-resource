@@ -13,7 +13,6 @@ import (
 	"github.com/knative/serving/pkg/apis/serving/v1alpha1"
 	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 	"github.com/onsi/gomega/ghttp"
-	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -40,16 +39,7 @@ var _ = Describe("In", func() {
 		server = ghttp.NewServer()
 		server.RouteToHandler("GET",
 			"/apis/serving.knative.dev/v1alpha1/namespaces/default/revisions/test_name",
-			ghttp.RespondWithJSONEncoded(200, v1alpha1.Revision{
-				TypeMeta: v1.TypeMeta{
-					Kind: "Revision",
-					APIVersion: "serving.knative.dev/v1alpha1",
-				},
-				ObjectMeta: v1.ObjectMeta{
-					Name: "test_name",
-					Namespace: "test",
-				},
-			}),
+			ghttp.RespondWithJSONEncoded(200, NewRevision()),
 		)
 		server.RouteToHandler("GET",
 			"/apis/serving.knative.dev/v1alpha1/namespaces/default/services/test_name",
@@ -115,10 +105,20 @@ var _ = Describe("In", func() {
 		Expect(svc.Spec.RunLatest.Configuration.RevisionTemplate.Spec.Container.Image).To(Equal("https://knative-service-image-registry.test/a-repo-path"))
 	})
 
+	It("Writes revision/latest.json", func() {
+		rvFile, err := os.Open(filepath.Join(destDir, "revision", "latest.json"))
+		Expect(err).NotTo(HaveOccurred())
+
+		rev := &v1alpha1.Revision{}
+		err = json.NewDecoder(rvFile).Decode(rev)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(rev.Name).To(Equal("test_name"))
+		Expect(rev.Spec.ServiceAccountName).To(Equal("a test value"))
+	})
+
 	//It("Writes revision/latest.yaml", func() {})
-	//
-	//It("Writes revision/latest.json", func() {})
-	//
+
 	//It("Returns the version", func() {})
 	//It("Returns metadata", func() {})
 
@@ -150,4 +150,20 @@ func NewService() *v1alpha1.Service {
 	}
 
 	return svc
+}
+
+func NewRevision() *v1alpha1.Revision {
+	return &v1alpha1.Revision{
+		TypeMeta: metav1.TypeMeta{
+			Kind: "Revision",
+			APIVersion: "serving.knative.dev/v1alpha1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "test_name",
+			Namespace: "test",
+		},
+		Spec: v1alpha1.RevisionSpec{
+			ServiceAccountName: "a test value",
+		},
+	}
 }

@@ -65,7 +65,7 @@ func (i *inner) getService() (*v1alpha1.Service, error) {
 		return nil, err
 	}
 
-	return service, nil
+	return service.DeepCopy(), nil
 }
 
 func (i *inner) getRevision() (*v1alpha1.Revision, error) {
@@ -75,5 +75,5 @@ func (i *inner) getRevision() (*v1alpha1.Revision, error) {
 		return nil, err
 	}
 
-	return revision, nil
+	return revision.DeepCopy(), nil
 }
