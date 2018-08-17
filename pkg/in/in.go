@@ -26,7 +26,7 @@ func (i *inner) In() (config.InResponse, v1alpha1.Service, v1alpha1.Revision, er
 		return config.InResponse{},
 			v1alpha1.Service{},
 			v1alpha1.Revision{},
-			fmt.Errorf("could not find Knative service '%s' in Kubernetes: %s", i.source.Name, err)
+			fmt.Errorf("could not get Knative service '%s' from Kubernetes: %s", i.source.Name, err.Error())
 	}
 
 	rev, err := i.getRevision()
@@ -34,7 +34,7 @@ func (i *inner) In() (config.InResponse, v1alpha1.Service, v1alpha1.Revision, er
 		return config.InResponse{},
 			v1alpha1.Service{},
 			v1alpha1.Revision{},
-			fmt.Errorf("could not find Knative revision for '%s' in Kubernetes: %s", i.source.Name, err)
+			fmt.Errorf("could not get Knative revision for '%s' from Kubernetes: %s", i.source.Name, err.Error())
 	}
 
 	output := config.InResponse{
