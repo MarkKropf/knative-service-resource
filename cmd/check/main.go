@@ -7,10 +7,11 @@ import (
 	"github.com/jchesterpivotal/knative-service-resource/pkg"
 	"fmt"
 	"log"
+	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 )
 
 func main() {
-	var input *check.Input
+	var input *config.CheckRequest
 	err := json.NewDecoder(os.Stdin).Decode(&input)
 	if err != nil {
 		log.Printf("failed to parse input JSON: %s", err)

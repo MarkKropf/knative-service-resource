@@ -20,3 +20,11 @@ type PutParams struct {
 	ImageRepository string `json:"image_repository"`
 	ImageDigest     string `json:"image_digest"`
 }
+
+type CheckRequest struct {
+	Source  Source  `json:"source"`
+	Version Version `json:"version,omitempty"`
+}
+
+type CheckResponse []Version
+

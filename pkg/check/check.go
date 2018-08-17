@@ -10,15 +10,8 @@ import (
 )
 
 type Checker interface {
-	Check() (Output, error)
+	Check() (config.CheckResponse, error)
 }
-
-type Input struct {
-	Source  config.Source  `json:"source"`
-	Version config.Version `json:"version,omitempty"`
-}
-
-type Output []config.Version
 
 type checker struct {
 	clients *clients.Clients
@@ -83,7 +76,7 @@ func (c *checker) versionsInKnativeSince(version string) ([]config.Version, erro
 	return versions, nil
 }
 
-func (c *checker) Check() (Output, error) {
+func (c *checker) Check() (config.CheckResponse, error) {
 	latestInKnative, err := c.latestGenerationInKnative()
 	if err != nil {
 		return nil, fmt.Errorf("could not find Knative service '%s' in Kubernetes: %s", c.source.Name, err)
