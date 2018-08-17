@@ -4,7 +4,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/jchesterpivotal/knative-service-resource/pkg/in"
-	"github.com/jchesterpivotal/knative-service-resource/pkg/concourse"
+	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 	"github.com/knative/serving/pkg/apis/serving/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -45,7 +45,7 @@ var _ = Describe("In", func() {
 		Revision:      fakeRevClient,
 	}
 
-	source := &concourse.Source{
+	source := &config.Source{
 		Name:            "test_name",
 		KubernetesUri:   "https://kubernetes.test",
 		KubernetesToken: "tokentokentoken",
@@ -59,38 +59,38 @@ var _ = Describe("In", func() {
 		var err error
 
 		BeforeEach(func() {
-			inner := in.NewInner(fakedClients, source, &concourse.Version{ConfigurationGeneration: "111"})
+			inner := in.NewInner(fakedClients, source, &config.Version{ConfigurationGeneration: "111"})
 			out, outSvc, outRev, err = inner.In()
 			Expect(err).NotTo(HaveOccurred())
 		})
 
 		Describe("when returning a version", func() {
 			It("Returns the version passed in by Concourse", func() {
-				Expect(out.Version).To(Equal(concourse.Version{ConfigurationGeneration: "111"}))
+				Expect(out.Version).To(Equal(config.Version{ConfigurationGeneration: "111"}))
 			})
 		})
 
 		Describe("when returning version metadata", func() {
-			var metadata []concourse.VersionMetadataField
+			var metadata []config.VersionMetadataField
 
 			BeforeEach(func() {
-				inner = in.NewInner(fakedClients, source, &concourse.Version{ConfigurationGeneration: "1"})
+				inner = in.NewInner(fakedClients, source, &config.Version{ConfigurationGeneration: "1"})
 				out, _, _, err = inner.In()
 				Expect(err).NotTo(HaveOccurred())
 				metadata = out.Metadata
 			})
 
 			It("includes kubernetes_cluster_name", func() {
-				Expect(metadata).To(ContainElement(concourse.VersionMetadataField{Name: "kubernetes_cluster_name", Value: "test_cluster_name"}))
+				Expect(metadata).To(ContainElement(config.VersionMetadataField{Name: "kubernetes_cluster_name", Value: "test_cluster_name"}))
 			})
 			It("includes kubernetes_creation_timestamp", func() {
-				Expect(metadata).To(ContainElement(concourse.VersionMetadataField{Name: "kubernetes_creation_timestamp", Value: "1970-01-01 00:00:00 +0000 UTC"}))
+				Expect(metadata).To(ContainElement(config.VersionMetadataField{Name: "kubernetes_creation_timestamp", Value: "1970-01-01 00:00:00 +0000 UTC"}))
 			})
 			It("includes kubernetes_resource_version", func() {
-				Expect(metadata).To(ContainElement(concourse.VersionMetadataField{Name: "kubernetes_resource_version", Value: "111"}))
+				Expect(metadata).To(ContainElement(config.VersionMetadataField{Name: "kubernetes_resource_version", Value: "111"}))
 			})
 			It("includes kubernetes_uid", func() {
-				Expect(metadata).To(ContainElement(concourse.VersionMetadataField{Name: "kubernetes_uid", Value: "test-uid-string"}))
+				Expect(metadata).To(ContainElement(config.VersionMetadataField{Name: "kubernetes_uid", Value: "test-uid-string"}))
 			})
 		})
 
@@ -112,7 +112,7 @@ var _ = Describe("In", func() {
 	Context("Kubernetes does not know about the requested Service", func() {
 		It("Returns an error", func() {
 			fakedClients.Service = sf.NewSimpleClientset().ServingV1alpha1().Services("test")
-			inner := in.NewInner(fakedClients, source, &concourse.Version{ConfigurationGeneration: "999"})
+			inner := in.NewInner(fakedClients, source, &config.Version{ConfigurationGeneration: "999"})
 
 			out, _, _, err := inner.In()
 

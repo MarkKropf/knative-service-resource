@@ -5,7 +5,7 @@ import (
 	servingtyped "github.com/knative/serving/pkg/client/clientset/versioned/typed/serving/v1alpha1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"github.com/jchesterpivotal/knative-service-resource/pkg/concourse"
+	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 	"fmt"
 )
 
@@ -22,7 +22,7 @@ const clientVersion = "0.0.0"
 // NewClients instantiates and returns several clientsets required for making request to the
 // Knative Serving cluster specified by the combination of clusterName and configPath. Clients can
 // make requests within namespace.
-func NewClients(src *concourse.Source, operation string) (*Clients, error) {
+func NewClients(src *config.Source, operation string) (*Clients, error) {
 	clients := &Clients{}
 	cfg, err := buildClientConfig(src, operation)
 	if err != nil {
@@ -46,7 +46,7 @@ func NewClients(src *concourse.Source, operation string) (*Clients, error) {
 	return clients, nil
 }
 
-func buildClientConfig(src *concourse.Source, operation string) (*rest.Config, error) {
+func buildClientConfig(src *config.Source, operation string) (*rest.Config, error) {
 	caData := []byte(src.KubernetesCa)
 	userAgent := buildUserAgent(operation, clientVersion)
 

@@ -1,4 +1,4 @@
-package concourse
+package config
 
 type PutParams struct {
 	ImageRepository string `json:"image_repository"`

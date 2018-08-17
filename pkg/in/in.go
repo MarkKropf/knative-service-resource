@@ -1,7 +1,7 @@
 package in
 
 import (
-	"github.com/jchesterpivotal/knative-service-resource/pkg/concourse"
+	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 	"github.com/jchesterpivotal/knative-service-resource/pkg"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/knative/serving/pkg/apis/serving/v1alpha1"
@@ -10,14 +10,14 @@ import (
 )
 
 type Input struct {
-	Source  concourse.Source  `json:"source"`
-	Version concourse.Version `json:"version"`
-	Params  struct{}          `json:"params"`
+	Source  config.Source  `json:"source"`
+	Version config.Version `json:"version"`
+	Params  struct{}       `json:"params"`
 }
 
 type Output struct {
-	Version  concourse.Version                `json:"version"`
-	Metadata []concourse.VersionMetadataField `json:"metadata"`
+	Version  config.Version                `json:"version"`
+	Metadata []config.VersionMetadataField `json:"metadata"`
 }
 
 type Inner interface {
@@ -27,8 +27,8 @@ type Inner interface {
 type inner struct {
 	clients *clients.Clients
 
-	source  *concourse.Source
-	version *concourse.Version
+	source  *config.Source
+	version *config.Version
 }
 
 func (i *inner) In() (Output, v1alpha1.Service, v1alpha1.Revision, error) {
@@ -50,7 +50,7 @@ func (i *inner) In() (Output, v1alpha1.Service, v1alpha1.Revision, error) {
 
 	output := Output{
 		*i.version,
-		[]concourse.VersionMetadataField{
+		[]config.VersionMetadataField{
 			{Name: "kubernetes_cluster_name", Value: svc.ClusterName},
 			{Name: "kubernetes_creation_timestamp", Value: svc.CreationTimestamp.String()},
 			{Name: "kubernetes_resource_version", Value: svc.ResourceVersion},
@@ -61,7 +61,7 @@ func (i *inner) In() (Output, v1alpha1.Service, v1alpha1.Revision, error) {
 	return output, *svc, *rev, nil
 }
 
-func NewInner(clients *clients.Clients, source *concourse.Source, version *concourse.Version) Inner {
+func NewInner(clients *clients.Clients, source *config.Source, version *config.Version) Inner {
 	return &inner{
 		clients: clients,
 		source:  source,

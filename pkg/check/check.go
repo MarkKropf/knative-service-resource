@@ -2,7 +2,7 @@ package check
 
 import (
 	"github.com/jchesterpivotal/knative-service-resource/pkg"
-	"github.com/jchesterpivotal/knative-service-resource/pkg/concourse"
+	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strconv"
 	"errors"
@@ -14,17 +14,17 @@ type Checker interface {
 }
 
 type Input struct {
-	Source  concourse.Source  `json:"source"`
-	Version concourse.Version `json:"version,omitempty"`
+	Source  config.Source  `json:"source"`
+	Version config.Version `json:"version,omitempty"`
 }
 
-type Output []concourse.Version
+type Output []config.Version
 
 type checker struct {
 	clients *clients.Clients
 
-	source  *concourse.Source
-	version *concourse.Version
+	source  *config.Source
+	version *config.Version
 }
 
 func (c *checker) isFirstCheck() bool {
@@ -64,19 +64,19 @@ func (c *checker) latestGenerationInKnative() (string, error) {
 	return strconv.Itoa(int(observedGeneration)), nil
 }
 
-func (c *checker) versionsInKnativeSince(version string) ([]concourse.Version, error) {
+func (c *checker) versionsInKnativeSince(version string) ([]config.Version, error) {
 	sel := fmt.Sprintf("serving.knative.dev/configuration=%s", c.source.Name)
 	revs, err := c.clients.Revision.List(v1.ListOptions{LabelSelector: sel})
 	if err != nil {
 		return nil, err
 	}
 
-	versions := make([]concourse.Version, 0)
+	versions := make([]config.Version, 0)
 	for _, r := range revs.Items {
 		gen := r.Annotations["serving.knative.dev/configurationGeneration"]
 
 		if gen > version {
-			versions = append(versions, concourse.Version{ConfigurationGeneration: gen})
+			versions = append(versions, config.Version{ConfigurationGeneration: gen})
 		}
 	}
 
@@ -90,7 +90,7 @@ func (c *checker) Check() (Output, error) {
 	}
 
 	if c.isFirstCheck() {
-		return []concourse.Version{
+		return []config.Version{
 			{ConfigurationGeneration: latestInKnative},
 		}, nil
 	}
@@ -102,7 +102,7 @@ func (c *checker) Check() (Output, error) {
 
 	switch compared {
 	case "VersionsEqual":
-		return []concourse.Version{*c.version}, nil
+		return []config.Version{*c.version}, nil
 	case "KnativeVersionHigher":
 		return c.versionsInKnativeSince(c.version.ConfigurationGeneration)
 	case "ConcourseVersionHigher":
@@ -118,7 +118,7 @@ func (c *checker) Check() (Output, error) {
 	return nil, nil
 }
 
-func NewChecker(clients *clients.Clients, source *concourse.Source, version *concourse.Version) Checker {
+func NewChecker(clients *clients.Clients, source *config.Source, version *config.Version) Checker {
 	return &checker{
 		clients: clients,
 		source:  source,

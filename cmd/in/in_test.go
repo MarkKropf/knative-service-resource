@@ -12,7 +12,7 @@ import (
 	"github.com/onsi/gomega/gexec"
 	"path/filepath"
 	"github.com/knative/serving/pkg/apis/serving/v1alpha1"
-	"github.com/jchesterpivotal/knative-service-resource/pkg/concourse"
+	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 	"github.com/onsi/gomega/ghttp"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
@@ -67,14 +67,14 @@ var _ = Describe("In", func() {
 		cmd := exec.Command(pathToIn, destDir)
 
 		payload, err := json.Marshal(in.Input{
-			Source: concourse.Source{
+			Source: config.Source{
 				Name:            "test_name",
 				KubernetesUri:   server.URL(),
 				KubernetesToken: "token",
 				KubernetesCa:    "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----",
 			},
-			Version: concourse.Version{ ConfigurationGeneration: "111" },
-			Params: struct{}{},
+			Version: config.Version{ ConfigurationGeneration: "111" },
+			Params:  struct{}{},
 		})
 		Expect(err).ToNot(HaveOccurred())
 

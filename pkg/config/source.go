@@ -1,4 +1,4 @@
-package concourse
+package config
 
 type Source struct {
 	Name            string `json:"name"`

@@ -7,7 +7,7 @@ import (
 	kf "k8s.io/client-go/kubernetes/fake"
 	sf "github.com/knative/serving/pkg/client/clientset/versioned/fake"
 	"github.com/jchesterpivotal/knative-service-resource/pkg/check"
-	"github.com/jchesterpivotal/knative-service-resource/pkg/concourse"
+	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
 	"github.com/knative/serving/pkg/apis/serving/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,7 +28,7 @@ var _ = Describe("Check", func() {
 		Configuration: fakeConfigClient,
 		Revision:      fakeRevClient,
 	}
-	source := &concourse.Source{
+	source := &config.Source{
 		Name:            "test_name",
 		KubernetesUri:   "https://kubernetes.test",
 		KubernetesToken: "tokentokentoken",
@@ -43,7 +43,7 @@ var _ = Describe("Check", func() {
 				rev2 := NewRevisionWithGeneration(2)
 				rev3 := NewRevisionWithGeneration(3)
 
-				concourseVersion := &concourse.Version{ConfigurationGeneration: "1"}
+				concourseVersion := &config.Version{ConfigurationGeneration: "1"}
 				fakedClients.Service = sf.NewSimpleClientset(svc1, rev1).ServingV1alpha1().Services("test")
 
 				svc1.Status.ObservedGeneration = 3
@@ -56,8 +56,8 @@ var _ = Describe("Check", func() {
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(out).To(ConsistOf(
-					concourse.Version{ConfigurationGeneration: "2"},
-					concourse.Version{ConfigurationGeneration: "3"},
+					config.Version{ConfigurationGeneration: "2"},
+					config.Version{ConfigurationGeneration: "3"},
 				))
 			})
 		})
@@ -65,7 +65,7 @@ var _ = Describe("Check", func() {
 		Context("Kubernetes and Concourse have the same version", func() {
 			It("Returns the version found in both", func() {
 				knativeVersion := NewServiceWithGeneration(22)
-				concourseVersion := &concourse.Version{ConfigurationGeneration: "22"}
+				concourseVersion := &config.Version{ConfigurationGeneration: "22"}
 				fakedClients.Service = sf.NewSimpleClientset(knativeVersion).ServingV1alpha1().Services("test")
 				checker = check.NewChecker(fakedClients, source, concourseVersion)
 
@@ -73,7 +73,7 @@ var _ = Describe("Check", func() {
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(out).To(ConsistOf(
-					concourse.Version{ConfigurationGeneration: "22"},
+					config.Version{ConfigurationGeneration: "22"},
 				))
 			})
 		})
@@ -84,7 +84,7 @@ var _ = Describe("Check", func() {
 				rev1 := NewRevisionWithGeneration(1)
 				rev2 := NewRevisionWithGeneration(2)
 
-				concourseVersion := &concourse.Version{ConfigurationGeneration: "3"}
+				concourseVersion := &config.Version{ConfigurationGeneration: "3"}
 				fakedClients.Service = sf.NewSimpleClientset(svc1, rev1).ServingV1alpha1().Services("test")
 
 				svc1.Status.ObservedGeneration = 2
@@ -101,7 +101,7 @@ var _ = Describe("Check", func() {
 
 		Context("Concourse has a version, but not Kubernetes", func() {
 			It("Returns an error", func() {
-				concourseVersion := &concourse.Version{ConfigurationGeneration: "3"}
+				concourseVersion := &config.Version{ConfigurationGeneration: "3"}
 				fakedClients.Service = sf.NewSimpleClientset().ServingV1alpha1().Services("test")
 
 				checker = check.NewChecker(fakedClients, source, concourseVersion)
@@ -123,7 +123,7 @@ var _ = Describe("Check", func() {
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(out).To(ConsistOf(
-					concourse.Version{ConfigurationGeneration: "111"},
+					config.Version{ConfigurationGeneration: "111"},
 				))
 			})
 		})
