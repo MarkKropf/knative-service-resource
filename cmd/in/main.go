@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"github.com/jchesterpivotal/knative-service-resource/pkg"
 	"github.com/jchesterpivotal/knative-service-resource/pkg/config"
+	"gopkg.in/yaml.v2"
 )
 
 func main() {
@@ -43,7 +44,16 @@ func main() {
 		return
 	}
 	defer svcJson.Close()
-
 	json.NewEncoder(svcJson).Encode(svc)
+
+	svcYaml, err := os.Create(filepath.Join(inDir, "service.yaml"))
+	if err != nil {
+		log.Printf("failed to create service.json: %s\n", err)
+		os.Exit(1)
+		return
+	}
+	defer svcYaml.Close()
+	yaml.NewEncoder(svcYaml).Encode(svc)
+
 	json.NewEncoder(os.Stdout).Encode(output)
 }

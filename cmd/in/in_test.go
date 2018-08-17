@@ -17,6 +17,7 @@ import (
 	"net/http"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"gopkg.in/yaml.v2"
 )
 
 var _ = Describe("In", func() {
@@ -102,8 +103,18 @@ var _ = Describe("In", func() {
 		Expect(svc.Spec.RunLatest.Configuration.RevisionTemplate.Spec.Container.Image).To(Equal("https://knative-service-image-registry.test/a-repo-path"))
 	})
 
-	//It("Writes service.yaml", func() {})
-	//
+	It("Writes service.yaml", func() {
+		svFile, err := os.Open(filepath.Join(destDir, "service.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+
+		svc := &v1alpha1.Service{}
+		err = yaml.NewDecoder(svFile).Decode(svc)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(svc.Name).To(Equal("test_name"))
+		Expect(svc.Spec.RunLatest.Configuration.RevisionTemplate.Spec.Container.Image).To(Equal("https://knative-service-image-registry.test/a-repo-path"))
+	})
+
 	//It("Writes revision/latest.yaml", func() {})
 	//
 	//It("Writes revision/latest.json", func() {})
