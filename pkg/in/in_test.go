@@ -28,8 +28,8 @@ var _ = Describe("In", func() {
 	rev := &v1alpha1.Revision{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: "test",
-			Name: "test_name",
-			UID: "test-revision-uid",
+			Name:      "test_name",
+			UID:       "test-revision-uid",
 		},
 	}
 

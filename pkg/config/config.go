@@ -38,4 +38,3 @@ type InResponse struct {
 	Version  Version                `json:"version"`
 	Metadata []VersionMetadataField `json:"metadata"`
 }
-

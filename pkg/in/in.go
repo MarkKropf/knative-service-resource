@@ -24,9 +24,9 @@ func (i *inner) In() (config.InResponse, v1alpha1.Service, v1alpha1.Revision, er
 	svc, err := i.getService()
 	if err != nil {
 		return config.InResponse{},
-		v1alpha1.Service{},
-		v1alpha1.Revision{},
-		fmt.Errorf("could not find Knative service '%s' in Kubernetes: %s", i.source.Name, err)
+			v1alpha1.Service{},
+			v1alpha1.Revision{},
+			fmt.Errorf("could not find Knative service '%s' in Kubernetes: %s", i.source.Name, err)
 	}
 
 	rev, err := i.getRevision()

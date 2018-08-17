@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-		"encoding/json"
+	"encoding/json"
 	"github.com/jchesterpivotal/knative-service-resource/pkg/check"
 	"github.com/jchesterpivotal/knative-service-resource/pkg"
 	"fmt"

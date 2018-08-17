@@ -64,7 +64,7 @@ var _ = Describe("In", func() {
 				KubernetesToken: "token",
 				KubernetesCa:    "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----",
 			},
-			Version: config.Version{ ConfigurationGeneration: "111" },
+			Version: config.Version{ConfigurationGeneration: "111"},
 			Params:  struct{}{},
 		})
 		Expect(err).ToNot(HaveOccurred())
@@ -135,7 +135,7 @@ var _ = Describe("In", func() {
 	})
 
 	It("Returns metadata", func() {
-		Expect(response.Metadata).To(ContainElement(config.VersionMetadataField{Name:"kubernetes_uid", Value: "test-uid-value"}))
+		Expect(response.Metadata).To(ContainElement(config.VersionMetadataField{Name: "kubernetes_uid", Value: "test-uid-value"}))
 	})
 
 	//Context("Something goes wrong while getting the Service and Revision", func() {
@@ -147,9 +147,9 @@ var _ = Describe("In", func() {
 func NewService() *v1alpha1.Service {
 	svc := &v1alpha1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Namespace:         "default",
-			Name:              "test_name",
-			UID: 				"test-uid-value",
+			Namespace: "default",
+			Name:      "test_name",
+			UID:       "test-uid-value",
 		},
 		Spec: v1alpha1.ServiceSpec{
 			RunLatest: &v1alpha1.RunLatestType{
@@ -172,11 +172,11 @@ func NewService() *v1alpha1.Service {
 func NewRevision() *v1alpha1.Revision {
 	return &v1alpha1.Revision{
 		TypeMeta: metav1.TypeMeta{
-			Kind: "Revision",
+			Kind:       "Revision",
 			APIVersion: "serving.knative.dev/v1alpha1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "test_name",
+			Name:      "test_name",
 			Namespace: "test",
 		},
 		Spec: v1alpha1.RevisionSpec{
