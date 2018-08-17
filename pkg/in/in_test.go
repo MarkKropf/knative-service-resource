@@ -53,7 +53,7 @@ var _ = Describe("In", func() {
 	}
 
 	Context("Kubernetes knows about the requested Service", func() {
-		var out in.Output
+		var out config.InResponse
 		var outSvc v1alpha1.Service
 		var outRev v1alpha1.Revision
 		var err error
@@ -116,7 +116,7 @@ var _ = Describe("In", func() {
 
 			out, _, _, err := inner.In()
 
-			Expect(out).To(Equal(in.Output{}))
+			Expect(out).To(Equal(config.InResponse{}))
 			Expect(err).To(MatchError("could not find Knative service 'test_name' in Kubernetes: services.serving.knative.dev \"test_name\" not found"))
 		})
 	})

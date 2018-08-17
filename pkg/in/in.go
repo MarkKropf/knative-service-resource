@@ -9,19 +9,8 @@ import (
 	"fmt"
 )
 
-type Input struct {
-	Source  config.Source  `json:"source"`
-	Version config.Version `json:"version"`
-	Params  struct{}       `json:"params"`
-}
-
-type Output struct {
-	Version  config.Version                `json:"version"`
-	Metadata []config.VersionMetadataField `json:"metadata"`
-}
-
 type Inner interface {
-	In() (Output, v1alpha1.Service, v1alpha1.Revision, error)
+	In() (config.InResponse, v1alpha1.Service, v1alpha1.Revision, error)
 }
 
 type inner struct {
@@ -31,10 +20,10 @@ type inner struct {
 	version *config.Version
 }
 
-func (i *inner) In() (Output, v1alpha1.Service, v1alpha1.Revision, error) {
+func (i *inner) In() (config.InResponse, v1alpha1.Service, v1alpha1.Revision, error) {
 	svc, err := i.getService()
 	if err != nil {
-		return Output{},
+		return config.InResponse{},
 		v1alpha1.Service{},
 		v1alpha1.Revision{},
 		fmt.Errorf("could not find Knative service '%s' in Kubernetes: %s", i.source.Name, err)
@@ -42,13 +31,13 @@ func (i *inner) In() (Output, v1alpha1.Service, v1alpha1.Revision, error) {
 
 	rev, err := i.getRevision()
 	if err != nil {
-		return Output{},
+		return config.InResponse{},
 			v1alpha1.Service{},
 			v1alpha1.Revision{},
 			fmt.Errorf("could not find Knative revision for '%s' in Kubernetes: %s", i.source.Name, err)
 	}
 
-	output := Output{
+	output := config.InResponse{
 		*i.version,
 		[]config.VersionMetadataField{
 			{Name: "kubernetes_cluster_name", Value: svc.ClusterName},

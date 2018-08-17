@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"os/exec"
 	"encoding/json"
-	"github.com/jchesterpivotal/knative-service-resource/pkg/in"
 	"github.com/onsi/gomega/gexec"
 	"path/filepath"
 	"github.com/knative/serving/pkg/apis/serving/v1alpha1"
@@ -66,7 +65,7 @@ var _ = Describe("In", func() {
 	JustBeforeEach(func() {
 		cmd := exec.Command(pathToIn, destDir)
 
-		payload, err := json.Marshal(in.Input{
+		payload, err := json.Marshal(config.InRequest{
 			Source: config.Source{
 				Name:            "test_name",
 				KubernetesUri:   server.URL(),
@@ -87,7 +86,7 @@ var _ = Describe("In", func() {
 		err = cmd.Run()
 		Expect(err).ToNot(HaveOccurred())
 
-		//err = json.Unmarshal(outBuf.Bytes(), &in.Output{})
+		//err = json.Unmarshal(outBuf.Bytes(), &in.InResponse{})
 		//Expect(err).ToNot(HaveOccurred())
 	})
 
