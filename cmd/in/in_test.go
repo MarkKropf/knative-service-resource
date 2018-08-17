@@ -24,6 +24,7 @@ var _ = Describe("In", func() {
 	var pathToIn string
 	var err error
 	var server *ghttp.Server
+	var response config.InResponse
 
 	BeforeEach(func() {
 		pathToIn, err = gexec.Build("github.com/jchesterpivotal/knative-service-resource/cmd/in")
@@ -77,8 +78,8 @@ var _ = Describe("In", func() {
 		err = cmd.Run()
 		Expect(err).ToNot(HaveOccurred())
 
-		//err = json.Unmarshal(outBuf.Bytes(), &in.InResponse{})
-		//Expect(err).ToNot(HaveOccurred())
+		err = json.Unmarshal(outBuf.Bytes(), &response)
+		Expect(err).ToNot(HaveOccurred())
 	})
 
 	It("Writes service.json", func() {
@@ -129,8 +130,13 @@ var _ = Describe("In", func() {
 		Expect(rev.Spec.ServiceAccountName).To(Equal("a test value"))
 	})
 
-	//It("Returns the version", func() {})
-	//It("Returns metadata", func() {})
+	It("Returns the version", func() {
+		Expect(response.Version.ConfigurationGeneration).To(Equal("111"))
+	})
+
+	It("Returns metadata", func() {
+		Expect(response.Metadata).To(ContainElement(config.VersionMetadataField{Name:"kubernetes_uid", Value: "test-uid-value"}))
+	})
 
 	//Context("Something goes wrong while getting the Service and Revision", func() {
 	//	It("Prints the error to stdout", func() {})
@@ -143,6 +149,7 @@ func NewService() *v1alpha1.Service {
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace:         "default",
 			Name:              "test_name",
+			UID: 				"test-uid-value",
 		},
 		Spec: v1alpha1.ServiceSpec{
 			RunLatest: &v1alpha1.RunLatestType{
