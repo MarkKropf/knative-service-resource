@@ -29,12 +29,22 @@ type CheckRequest struct {
 type CheckResponse []Version
 
 type InRequest struct {
-	Source  Source   `json:"source"`
-	Version Version  `json:"version"`
-	Params  struct{} `json:"params"`
+	Source  Source    `json:"source"`
+	Version Version   `json:"version"`
+	Params  PutParams `json:"params"`
 }
 
 type InResponse struct {
+	Version  Version                `json:"version"`
+	Metadata []VersionMetadataField `json:"metadata"`
+}
+
+type OutRequest struct {
+	Source Source    `json:"source"`
+	Params PutParams `json:"params"`
+}
+
+type OutResponse struct {
 	Version  Version                `json:"version"`
 	Metadata []VersionMetadataField `json:"metadata"`
 }
