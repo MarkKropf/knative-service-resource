@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-mkdir -p out
+mkdir -p assets
 
 echo "Building commands"
 export GOOS=linux
@@ -16,5 +16,7 @@ go build -o out/in      cmd/in/main.go
 
 echo "Building and tagging docker image"
 docker build . --tag gcr.io/cf-elafros-dog/knative-service-resource
+
+rm -r assets
 
 echo "Done."

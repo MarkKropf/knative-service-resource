@@ -1,4 +1,4 @@
 FROM scratch
 
-ADD ./out/check /opt/resource/check
-ADD ./out/in    /opt/resource/in
+ADD ./assets/check /opt/resource/check
+ADD ./assets/in    /opt/resource/in

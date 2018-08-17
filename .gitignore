@@ -1,5 +1,5 @@
 # Directory used by build.sh
-out/
+assets/
 
 # based on https://raw.githubusercontent.com/github/gitignore/master/Global/macOS.gitignore
 # General
