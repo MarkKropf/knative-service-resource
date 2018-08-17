@@ -38,8 +38,8 @@ func (i *inner) In() (config.InResponse, v1alpha1.Service, v1alpha1.Revision, er
 	}
 
 	output := config.InResponse{
-		*i.version,
-		[]config.VersionMetadataField{
+		Version: *i.version,
+		Metadata: []config.VersionMetadataField{
 			{Name: "kubernetes_cluster_name", Value: svc.ClusterName},
 			{Name: "kubernetes_creation_timestamp", Value: svc.CreationTimestamp.String()},
 			{Name: "kubernetes_resource_version", Value: svc.ResourceVersion},
