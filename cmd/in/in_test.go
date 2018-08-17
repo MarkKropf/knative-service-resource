@@ -99,7 +99,7 @@ var _ = Describe("In", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		Expect(svc.Name).To(Equal("test_name"))
-		Expect(svc.Kind).To(Equal("Service"))
+		Expect(svc.Spec.RunLatest.Configuration.RevisionTemplate.Spec.Container.Image).To(Equal("https://knative-service-image-registry.test/a-repo-path"))
 	})
 
 	//It("Writes service.yaml", func() {})
