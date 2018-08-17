@@ -117,7 +117,17 @@ var _ = Describe("In", func() {
 		Expect(rev.Spec.ServiceAccountName).To(Equal("a test value"))
 	})
 
-	//It("Writes revision/latest.yaml", func() {})
+	It("Writes revision/latest.yaml", func() {
+		rvFile, err := os.Open(filepath.Join(destDir, "revision", "latest.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+
+		rev := &v1alpha1.Revision{}
+		err = yaml.NewDecoder(rvFile).Decode(rev)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(rev.Name).To(Equal("test_name"))
+		Expect(rev.Spec.ServiceAccountName).To(Equal("a test value"))
+	})
 
 	//It("Returns the version", func() {})
 	//It("Returns metadata", func() {})

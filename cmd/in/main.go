@@ -70,5 +70,14 @@ func main() {
 	defer revJson.Close()
 	json.NewEncoder(revJson).Encode(rev)
 
+	revYaml, err := os.Create(filepath.Join(inDir, "revision", "latest.yaml"))
+	if err != nil {
+		log.Printf("failed to create revision/latest.yaml: %s\n", err)
+		os.Exit(1)
+		return
+	}
+	defer revYaml.Close()
+	yaml.NewEncoder(revYaml).Encode(rev)
+
 	json.NewEncoder(os.Stdout).Encode(output)
 }
